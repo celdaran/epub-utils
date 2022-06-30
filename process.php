@@ -6,7 +6,7 @@ require_once('Transform.php');
 //   writeRecipe();
 
        // Read file
-   $html = file_get_contents('recipe.xhtml');
+   $html = file_get_contents('files/13_coffee-shop-sous-vid.xhtml');
 //   readAndWriteRecipe($html);
    readAndWriteRecipe2($html);
 
