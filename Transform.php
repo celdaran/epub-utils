@@ -13,6 +13,9 @@ class Transform
 
     private ?string $currentSection;
 
+    private array $attributeTransforms = [
+        'href' => ['from' => 'style.css', 'to' => 'css/manuscript.css']
+    ];
 
     public function initializeInput(string $fileName)
     {
@@ -165,9 +168,15 @@ class Transform
             $parentNode->appendChild($tag);
 
             foreach ($node->attributes as $attribute) {
-                $attr = $this->output->createAttribute($attribute->nodeName);
-                $attr->value = $attribute->nodeValue;
-                $tag->appendChild($attr);
+                // Any transformations?
+                if (in_array($attribute->nodeName, array_keys($this->attributeTransforms))) {
+                    $attributeValue = $this->attributeTransforms[$attribute->nodeName]['to'];
+                } else {
+                    $attributeValue = $attribute->nodeValue;
+                }
+
+                // Set attribute value
+                $tag->setAttribute($attribute->nodeName, $attributeValue);
             }
 
             if ($nodeValue) {
