@@ -11,6 +11,7 @@ class Transform
     private domDocument $output;
     private domElement $tag;
 
+    private string $documentTitle;
     private ?string $currentSection;
 
     private array $attributeTransforms = [
@@ -22,6 +23,7 @@ class Transform
         $this->input = new domDocument;
         $this->input->loadHTML($fileName);
         $this->input->preserveWhiteSpace = false;
+        $this->documentTitle = 'unknown';
     }
 
     public function initializeOutput()
@@ -208,10 +210,22 @@ class Transform
 
         return $div;
     }
-  
-    public function finalize()
+
+    private function slugify(string $subject): string
+    {
+        $subject = strtolower($subject);
+        $subject = str_replace(' ', '-', $subject);
+        $subject = preg_replace('/[\']/', '', $subject);
+        return $subject;
+    }
+
+    public function finalize(): array
     {
         $this->output->formatOutput = true;
-        echo $this->output->saveXML();
+        return [
+            'title' => $this->documentTitle,
+            'slug' => $this->slugify($this->documentTitle),
+            'xhtml' => $this->output->saveXML()
+        ];
     }
 }
