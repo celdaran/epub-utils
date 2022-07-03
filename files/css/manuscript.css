@@ -1,0 +1,20 @@
+body {
+    color: lightslategray;
+}
+
+h1, h2, h3 {
+    font-family: "Arial Narrow", sans-serif;
+    text-transform: uppercase;
+}
+
+p {
+    font-family: "Verdana", sans-serif;
+}
+
+div.stats {
+    border: 1px solid #f00;
+}
+
+p.stats {
+    color: #00ff00;
+}
