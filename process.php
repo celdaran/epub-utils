@@ -1,18 +1,22 @@
 <?php namespace App;
 
+// Get command line options
+$opts  = "i:o:";
+$options = getopt($opts);
+
 // Load transformation engine
 require_once('Transform.php');
 
 // Get files
-$files = scandir('files');
+$files = scandir($options['i']);
 $count = 0;
 
 // Process files
 foreach ($files as $file) {
 
-    $inputFileName = "files/$file";
+    $inputFileName = $options['i'] . '/' . $file;
 
-    if (is_file($inputFileName)) {
+    if (is_file($inputFileName) && ($file === '13_coffee-shop-sous-vid.xhtml') /* for testing */) {
         // File number
         $count++;
 
@@ -27,7 +31,7 @@ foreach ($files as $file) {
         $output = $x->finalize();
 
         // Write file output
-        $outputFileName = sprintf('files/output/%03d.%s.xhtml', $count, $output['slug']);
+        $outputFileName = sprintf($options['o'] . '/' . '%03d.%s.xhtml', $count, $output['slug']);
         file_put_contents($outputFileName, $output['xhtml']);
     }
 }
