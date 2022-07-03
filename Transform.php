@@ -110,22 +110,22 @@ class Transform
                                 if (($recipeNodeName === 'h1') && (1 === 1)) {
                                     $this->currentSection = 'title';
                                     $this->documentTitle = $recipeNodeValue;
-                                    $div = $this->writeHeading('h2');
+                                    $div = $this->writeHeading('h2', $recipeNodeValue);
                                 } elseif (($recipeNodeName === 'div') && ($grandChildNode->attributes['class'] === 'chapter-content')) {
                                     $this->currentSection = 'images';
-                                    $div = $this->writeHeading();
+                                    $div = $this->writeHeading('h3', $recipeNodeValue);
                                 } elseif (($recipeNodeName === 'p') && ($recipeNodeValue === 'Stats')) {
                                     $this->currentSection = 'stats';
-                                    $div = $this->writeHeading();
+                                    $div = $this->writeHeading('h3', $recipeNodeValue);
                                 } elseif (($recipeNodeName === 'p') && ($recipeNodeValue === 'Ingredients')) {
                                     $this->currentSection = 'ingredients';
-                                    $div = $this->writeHeading();
+                                    $div = $this->writeHeading('h3', $recipeNodeValue);
                                 } elseif (($recipeNodeName === 'p') && ($recipeNodeValue === 'Method')) {
                                     $this->currentSection = 'method';
-                                    $div = $this->writeHeading();
+                                    $div = $this->writeHeading('h3', $recipeNodeValue);
                                 } elseif (($recipeNodeName === 'p') && ($recipeNodeValue === 'Nutrition')) {
                                     $this->currentSection = 'nutrition';
-                                    $div = $this->writeHeading();
+                                    $div = $this->writeHeading('h3', $recipeNodeValue);
                                 } else {
                                     echo "$recipeNodeName = $recipeNodeValue (section {$this->currentSection})\n";
                                     if ($this->currentSection === null) {
@@ -187,25 +187,24 @@ class Transform
         }
     }
 
-    private function writeHeading(string $tag = 'h3'): DomElement
+    private function writeHeading(string $tag, string $value): DomElement
     {
         // Set $type and $text
-        $type = strtolower($this->currentSection) . '-heading';
-        $text = ucfirst($this->currentSection);
+        $class = strtolower($this->currentSection) . '-heading';
 
         // Create surrounding div
         $div = $this->output->createElement('div');
         $div->setAttribute('class', $this->currentSection);
         $this->tag->appendChild($div);
 
-        // Create h3 tag
+        // Create tag
         $heading = $this->output->createElement($tag);
         $div->appendChild($heading);
-        $heading->nodeValue = $text;
+        $heading->nodeValue = $value;
 
         // Add class attribute
         $attr = $this->output->createAttribute('class');
-        $attr->value = $type;
+        $attr->value = $class;
         $heading->appendChild($attr);
 
         return $div;
