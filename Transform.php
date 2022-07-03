@@ -215,7 +215,7 @@ class Transform
     {
         $subject = strtolower($subject);
         $subject = str_replace(' ', '-', $subject);
-        $subject = preg_replace('/[\']/', '', $subject);
+        $subject = preg_replace('/[\':]/', '', $subject);
         return $subject;
     }
 
