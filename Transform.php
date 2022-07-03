@@ -11,6 +11,8 @@ class Transform
     private domDocument $output;
     private domElement $tag;
 
+    private ?string $currentSection;
+
 
     public function initializeInput(string $fileName)
     {
@@ -82,12 +84,10 @@ class Transform
             $outputRoot->appendChild($body);
 
             foreach ($node->childNodes as $childNode) {
-                $childNodeName = $childNode->nodeName;
-                $childNodeValue = $childNode->nodeValue;
-
-                if ($childNodeName !== '#text') {
-                    // echo '<li>' . $childNode->nodeName . ' - ' . $childNode->nodeValue . '</li>';
-                    $this->tag = $this->output->createElement($childNodeName);
+                $this->currentSection = null;
+                $div = null;
+                if ($childNode->nodeName !== '#text') {
+                    $this->tag = $this->output->createElement($childNode->nodeName);
                     $body->appendChild($this->tag);
 
                     foreach ($childNode->attributes as $attribute) {
@@ -100,27 +100,52 @@ class Transform
                         foreach ($childNode->childNodes as $grandChildNode) {
                             $recipeNodeName = $grandChildNode->nodeName;
                             $recipeNodeValue = $grandChildNode->nodeValue;
-                             
+
                             if ($recipeNodeName !== '#text') {
-                                if (($recipeNodeName === 'p') && ($recipeNodeValue === 'Stats')) {
-                                    $this->writeHeading3('stats-heading');
+                                if (($recipeNodeName === 'h1') && (1 === 1)) {
+                                    $this->currentSection = 'title';
+                                    $this->documentTitle = $recipeNodeValue;
+                                    $div = $this->writeHeading('h2');
+                                } elseif (($recipeNodeName === 'div') && ($grandChildNode->attributes['class'] === 'chapter-content')) {
+                                    $this->currentSection = 'images';
+                                    $div = $this->writeHeading();
+                                } elseif (($recipeNodeName === 'p') && ($recipeNodeValue === 'Stats')) {
+                                    $this->currentSection = 'stats';
+                                    $div = $this->writeHeading();
                                 } elseif (($recipeNodeName === 'p') && ($recipeNodeValue === 'Ingredients')) {
-                                    $this->writeHeading3('ingredients-heading');
+                                    $this->currentSection = 'ingredients';
+                                    $div = $this->writeHeading();
                                 } elseif (($recipeNodeName === 'p') && ($recipeNodeValue === 'Method')) {
-                                    $this->writeHeading3('method-heading');
+                                    $this->currentSection = 'method';
+                                    $div = $this->writeHeading();
+                                } elseif (($recipeNodeName === 'p') && ($recipeNodeValue === 'Nutrition')) {
+                                    $this->currentSection = 'nutrition';
+                                    $div = $this->writeHeading();
                                 } else {
+                                    echo "$recipeNodeName = $recipeNodeValue (section {$this->currentSection})\n";
+                                    if ($this->currentSection === null) {
+                                        // this is the opening: qr code, photo, and blockquote
+                                        // so process accordingly
+                                    } else {
+                                        // We're underway with a section
+                                    }
                                     $yyz = $this->output->createElement($recipeNodeName);
-                                    $this->tag->appendChild($yyz);
-                                }
+                                    $yyz->setAttribute('class', $this->currentSection);
+                                    if ($this->currentSection === null) {
+                                        $this->tag->appendChild($yyz);
+                                    } else {
+                                        $div->appendChild($yyz);
+                                    }
 
-                                foreach ($grandChildNode->attributes as $attribute) {
-                                    $attr = $this->output->createAttribute($attribute->nodeName);
-                                    $attr->value = $attribute->nodeValue;
-                                    $yyz->appendChild($attr);
-                                }
+                                    foreach ($grandChildNode->attributes as $attribute) {
+                                        $attr = $this->output->createAttribute($attribute->nodeName);
+                                        $attr->value = $attribute->nodeValue;
+                                        $yyz->appendChild($attr);
+                                    }
 
-                                if ($recipeNodeValue) {
-                                    $yyz->nodeValue = $recipeNodeValue;
+                                    if ($recipeNodeValue) {
+                                        $yyz->nodeValue = $recipeNodeValue;
+                                    }
                                 }
                             }
                         }
@@ -151,16 +176,28 @@ class Transform
         }
     }
 
-    private function writeHeading3(string $type)
+    private function writeHeading(string $tag = 'h3'): DomElement
     {
+        // Set $type and $text
+        $type = strtolower($this->currentSection) . '-heading';
+        $text = ucfirst($this->currentSection);
+
+        // Create surrounding div
+        $div = $this->output->createElement('div');
+        $div->setAttribute('class', $this->currentSection);
+        $this->tag->appendChild($div);
+
         // Create h3 tag
-        $h3 = $this->output->createElement('h3');
-        $this->tag->appendChild($h3);
+        $heading = $this->output->createElement($tag);
+        $div->appendChild($heading);
+        $heading->nodeValue = $text;
 
         // Add class attribute
         $attr = $this->output->createAttribute('class');
         $attr->value = $type;
-        $h3->appendChild($attr);
+        $heading->appendChild($attr);
+
+        return $div;
     }
   
     public function finalize()
