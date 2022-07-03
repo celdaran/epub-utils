@@ -1,23 +1,29 @@
 <?php namespace App;
 
+use domDocument;
+use domElement;
+use DOMImplementation;
+use DOMNode;
+
 class Transform
 {
-    private \domDocument $input;
-    private \domDocument $output;
-    private \domElement $tag;
+    private domDocument $input;
+    private domDocument $output;
+    private domElement $tag;
+
 
     public function initializeInput(string $fileName)
     {
-        $this->input = new \domDocument;
+        $this->input = new domDocument;
         $this->input->loadHTML($fileName);
         $this->input->preserveWhiteSpace = false;
     }
 
     public function initializeOutput()
     {
-        $this->output = new \domDocument('1.0', 'UTF-8');
+        $this->output = new domDocument('1.0', 'UTF-8');
 
-        $outputImplementation = new \DOMImplementation();
+        $outputImplementation = new DOMImplementation();
         $docType = $outputImplementation->createDocumentType('html');
         $this->output->appendChild($docType);
 
@@ -27,11 +33,12 @@ class Transform
         $attr = $this->output->createAttribute('xmlns');
         $attr->value = 'http://www.w3.org/1999/xhtml';
         $html->appendChild($attr);
- 
+
         $attr = $this->output->createAttribute('xmlns:epub');
+        /** @noinspection HttpUrlsUsage */
         $attr->value = 'http://www.idpf.org/2007/ops';
         $html->appendChild($attr);
- 
+
         $attr = $this->output->createAttribute('lang');
         $attr->value = 'en';
         $html->appendChild($attr);
@@ -53,7 +60,7 @@ class Transform
         }
     }
 
-    private function dumpHead(\DOMNode $node)
+    private function dumpHead(DOMNode $node)
     {
         $outputRoot = $this->output->documentElement;
 
@@ -66,7 +73,7 @@ class Transform
         }
     }
 
-    private function dumpBody(\DOMNode $node)
+    private function dumpBody(DOMNode $node)
     {
         $outputRoot = $this->output->documentElement;
 
@@ -123,7 +130,7 @@ class Transform
         }
     }
 
-    private function copyTag(\DOMNode $parentNode, \DOMNode $node)
+    private function copyTag(DOMNode $parentNode, DOMNode $node)
     {
         $nodeName = $node->nodeName;
         $nodeValue = $node->nodeValue;
