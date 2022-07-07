@@ -1,7 +1,7 @@
 <?php namespace App;
 
 // Get command line options
-$opts  = "i:o:";
+$opts = "i:o:";
 $options = getopt($opts);
 
 // Load transformation engine
@@ -31,7 +31,8 @@ foreach ($files as $file) {
         $output = $x->finalize();
 
         // Write file output
-        $outputFileName = sprintf($options['o'] . '/' . '%03d.%s.xhtml', $count, $output['slug']);
+        $outputFileName = sprintf($options['o'] . '/' . '%04d.%s.xhtml', $count, $output['slug']);
         file_put_contents($outputFileName, $output['xhtml']);
     }
 }
+
