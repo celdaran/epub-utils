@@ -146,7 +146,9 @@ class Transform
                                             $yyz->setAttribute('class', $this->currentSection);
                                         }
                                     } else {
-                                        // We're underway with a section
+                                        // These are coming in as <p> but I want to send them out
+                                        $yyz = $this->output->createElement('li');
+                                        $yyz->setAttribute('class', $this->currentSection);
                                     }
                                     if ($this->currentSection === null) {
                                         $this->tag->appendChild($yyz);
@@ -231,7 +233,10 @@ class Transform
         $attr->value = $class;
         $heading->appendChild($attr);
 
-        return $div;
+        $ul = $this->output->createElement('ul');
+        $div->appendChild($ul);
+
+        return $ul;
     }
 
     private function slugify(string $subject): string
