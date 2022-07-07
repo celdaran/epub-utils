@@ -5,7 +5,7 @@ $opts = "i:o:";
 $options = getopt($opts);
 
 // Load transformation engine
-require_once('Transform.php');
+require_once('lib/Transform.php');
 
 // Get files
 $files = scandir($options['i']);
@@ -24,7 +24,7 @@ foreach ($files as $file) {
         $input = file_get_contents($inputFileName);
 
         // Process file
-        $x = new Transform();
+        $x = new lib\Transform();
         $x->initializeInput($input);
         $x->initializeOutput();
         $x->process();

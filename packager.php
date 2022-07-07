@@ -5,8 +5,8 @@ $opts = "i:o:t:";
 $options = getopt($opts);
 
 // Load transformation engine
-require_once('Package.php');
-$p = new Package();
+require_once('lib/Package.php');
+$p = new lib\Package();
 $p->initializeOutput($options['t']);
 
 // Process files
@@ -17,7 +17,7 @@ processDirectory($p, $options['i'], 'xhtml');
 // Save output package
 file_put_contents($options['o'], $p->finalize());
 
-function processDirectory(Package $p, string $dirName, string $dirType)
+function processDirectory(lib\Package $p, string $dirName, string $dirType)
 {
     $dir = $dirName . '/' . $dirType;
 
