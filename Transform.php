@@ -127,15 +127,27 @@ class Transform
                                     $this->currentSection = 'nutrition';
                                     $div = $this->writeHeading('h3', $recipeNodeValue);
                                 } else {
-                                    echo "$recipeNodeName = $recipeNodeValue (section {$this->currentSection})\n";
+                                    // echo "$recipeNodeName = $recipeNodeValue (section {$this->currentSection})\n";
                                     if ($this->currentSection === null) {
                                         // this is the opening: qr code, photo, and blockquote
                                         // so process accordingly
+                                        $nextThing = $grandChildNode->childNodes[0];
+                                        if ($nextThing->nodeName === 'img') {
+                                            $flag = true;
+                                            // echo "*** Found a qr code or photo\n";
+                                            // echo "***   value: " . $nextThing->nodeValue . "\n";
+                                            $yyz = $this->output->createElement('img');
+                                            $yyz->setAttribute('class', $this->currentSection);
+                                        } else {
+                                            $flag = false;
+                                            // echo "*** Found a blockquote\n";
+                                            // echo "***   value: " . $nextThing->nodeValue . "\n";
+                                            $yyz = $this->output->createElement('blockquote');
+                                            $yyz->setAttribute('class', $this->currentSection);
+                                        }
                                     } else {
                                         // We're underway with a section
                                     }
-                                    $yyz = $this->output->createElement($recipeNodeName);
-                                    $yyz->setAttribute('class', $this->currentSection);
                                     if ($this->currentSection === null) {
                                         $this->tag->appendChild($yyz);
                                     } else {
@@ -148,8 +160,20 @@ class Transform
                                         $yyz->appendChild($attr);
                                     }
 
-                                    if ($recipeNodeValue) {
-                                        $yyz->nodeValue = $recipeNodeValue;
+                                    if ($flag) {
+                                        $nextThingImported = $this->output->importNode($nextThing);
+                                        /*
+                                        $yyz->appendChild($nextThingImported);
+                                        */
+                                        $imgSrc = $nextThingImported->attributes[0]->nodeValue;
+                                        $imgClass = (substr($imgSrc, -3) === 'jpg' ? 'photo' : 'qr');
+                                        $yyz->removeAttribute('class');
+                                        $yyz->setAttribute('src', $imgSrc);
+                                        $yyz->setAttribute('class', $imgClass);
+                                    } else {
+                                        if ($recipeNodeValue) {
+                                            $yyz->nodeValue = $recipeNodeValue;
+                                        }
                                     }
                                 }
                             }
