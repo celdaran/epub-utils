@@ -15,7 +15,7 @@ class Transform
     private ?string $currentSection;
 
     private array $attributeTransforms = [
-        'href' => ['from' => 'style.css', 'to' => 'css/manuscript.css']
+        'href' => ['from' => 'style.css', 'to' => '../css/manuscript.css']
     ];
 
     public function initializeInput(string $fileName)
@@ -168,6 +168,7 @@ class Transform
                                         $yyz->appendChild($nextThingImported);
                                         */
                                         $imgSrc = $nextThingImported->attributes[0]->nodeValue;
+                                        $imgSrc = str_replace('images/', '../img/', $imgSrc);
                                         $imgClass = (substr($imgSrc, -3) === 'jpg' ? 'photo' : 'qr');
                                         $yyz->removeAttribute('class');
                                         $yyz->setAttribute('src', $imgSrc);
@@ -198,7 +199,10 @@ class Transform
             foreach ($node->attributes as $attribute) {
                 // Any transformations?
                 if (in_array($attribute->nodeName, array_keys($this->attributeTransforms))) {
-                    $attributeValue = $this->attributeTransforms[$attribute->nodeName]['to'];
+                    $attributeValue = str_replace(
+                        $this->attributeTransforms[$attribute->nodeName]['from'],
+                        $this->attributeTransforms[$attribute->nodeName]['to'],
+                        $attribute->nodeValue);
                 } else {
                     $attributeValue = $attribute->nodeValue;
                 }
