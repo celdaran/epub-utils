@@ -6,19 +6,21 @@ $options = getopt($opts);
 
 // Load transformation engine
 require_once('lib/Transform.php');
+require_once('lib/Renamer.php');
+
+// Instanitate renamer goodies
+$r = new lib\Renamer();
 
 // Get files
 $files = scandir($options['i']);
-$count = 0;
 
 // Process files
 foreach ($files as $file) {
 
     $inputFileName = $options['i'] . '/' . $file;
 
-    if (is_file($inputFileName) && ($file === '13_coffee-shop-sous-vid.xhtml') /* for testing */) {
-        // File number
-        $count++;
+    if (is_file($inputFileName)) {
+        $chapterNumber = $r->getChapterNumber($file);
 
         // Read file
         $input = file_get_contents($inputFileName);
@@ -31,7 +33,7 @@ foreach ($files as $file) {
         $output = $x->finalize();
 
         // Write file output
-        $outputFileName = sprintf($options['o'] . '/' . '%04d.%s.xhtml', $count, $output['slug']);
+        $outputFileName = sprintf($options['o'] . '/xhtml/' . '%s.%s.xhtml', $chapterNumber, $output['slug']);
         file_put_contents($outputFileName, $output['xhtml']);
     }
 }
