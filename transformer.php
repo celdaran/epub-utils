@@ -8,7 +8,7 @@ $options = getopt($opts);
 require_once('lib/Transform.php');
 require_once('lib/Renamer.php');
 
-// Instanitate renamer goodies
+// Instantiate renamer goodies
 $r = new lib\Renamer();
 
 // Get files
@@ -19,7 +19,7 @@ foreach ($files as $file) {
 
     $inputFileName = $options['i'] . '/' . $file;
 
-    if (is_file($inputFileName)) {
+    if (is_file($inputFileName) && (substr($inputFileName, -6) === '.xhtml')) {
         $chapterNumber = $r->getChapterNumber($file);
 
         // Read file
