@@ -18,10 +18,10 @@ class Transform
         'href' => ['from' => 'style.css', 'to' => '../css/manuscript.css']
     ];
 
-    public function initializeInput(string $fileName)
+    public function initializeInput(string $file)
     {
         $this->input = new domDocument;
-        $this->input->loadHTML($fileName);
+        $this->input->loadHTML($file);
         $this->input->preserveWhiteSpace = false;
         $this->documentTitle = 'unknown';
     }
