@@ -21,7 +21,9 @@ class Transform
     public function initializeInput(string $file)
     {
         $this->input = new domDocument;
-        $this->input->loadHTML($file);
+        if ($this->input->loadXML($file) === false) {
+            echo "Could not read file\n";
+        }
         $this->input->preserveWhiteSpace = false;
         $this->documentTitle = 'unknown';
     }
@@ -175,7 +177,7 @@ class Transform
                                         $yyz->setAttribute('class', $imgClass);
                                     } else {
                                         if ($recipeNodeValue) {
-                                            $yyz->nodeValue = $recipeNodeValue;
+                                            $yyz->nodeValue = htmlspecialchars($recipeNodeValue);
                                         }
                                     }
                                 }
