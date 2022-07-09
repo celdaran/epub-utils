@@ -13,7 +13,7 @@ $toc->initializeOutput();
 processDirectory($toc, $options['i']);
 
 // Save output package
-file_put_contents($options['o'] . '/xhtml/', $toc->finalize());
+file_put_contents($options['o'], $toc->finalize());
 
 function processDirectory(lib\Toc $toc, string $inputDir)
 {
