@@ -1,13 +1,17 @@
 <?php namespace App;
 
 // Get command line options
-$opts = "i:o:";
+$opts = "i:";
 $options = getopt($opts);
 
-// Process files
-processDirectory($options['i'], $options['o']);
+// Load transformation engine
+require_once('lib/Renamer.php');
+$r = new lib\Renamer();
 
-function processDirectory(string $inputDir, string $outputDir)
+// Process files
+processDirectory($r, $options['i']);
+
+function processDirectory(lib\Renamer $r, string $inputDir)
 {
     // Get css files
     $files = scandir($inputDir);
@@ -17,18 +21,23 @@ function processDirectory(string $inputDir, string $outputDir)
 
         $inputFileName = $inputDir . '/' . $file;
         if (substr($inputFileName, -6) !== '.xhtml') {
+            // Only process xhtml files
+            continue;
+        }
+        if (preg_match('/[0-9]{4}/', $file)) {
+            // Only process files that don't already start with four digits
             continue;
         }
 
         $part = explode('_', $file);
-        if (count($part) > 1) {
-            $oldNumber = array_shift($part);
-            $newNumber = sprintf('%04d', (int)$oldNumber);
+        $newNumber = $r->getChapterNumber($file);
+        if ($newNumber) {
+            array_shift($part);
             $newFile = $newNumber . '_' . join('_', $part);
         } else {
             $newFile = $file;
         }
 
-        copy($inputDir . '/'. $file, $outputDir . '/' . $newFile);
+        rename($inputDir . '/'. $file, $inputDir . '/' . $newFile);
     }
 }
