@@ -25,16 +25,28 @@ foreach ($files as $file) {
         // Read file
         $input = file_get_contents($inputFileName);
 
-        // Process file
+        // Get type
         $x = new lib\Transform();
         $x->initializeInput($input);
-        $x->initializeOutput();
-        $x->process();
-        $output = $x->finalize();
+        $isRecipe = $x->isRecipe();
 
-        // Write file output
-        $outputFileName = sprintf($options['o'] . '/xhtml/' . '%s.%s.xhtml', $chapterNumber, $output['slug']);
-        file_put_contents($outputFileName, $output['xhtml']);
+        if ($isRecipe) {
+            // Process file
+            $x->initializeOutput();
+            $x->process();
+            $output = $x->finalize();
+
+            // Write file output
+            $outputFileName = sprintf($options['o'] . '/xhtml/' . '%s.%s.xhtml', $chapterNumber, $output['slug']);
+            file_put_contents($outputFileName, $output['xhtml']);
+        } else {
+            // Copy file as is
+            // TODO: consider splitting $x->process() into processRecipe() and processOther() and simplify this if/else block
+            $slug = $x->extractSlug();
+            $outputFileName = sprintf($options['o'] . '/xhtml/' . '%s.%s.xhtml', $chapterNumber, $slug);
+            copy($inputFileName, $outputFileName);
+        }
+
     }
 }
 

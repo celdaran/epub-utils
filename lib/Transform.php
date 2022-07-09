@@ -69,6 +69,29 @@ class Transform
         }
     }
 
+    /**
+     * @return bool
+     */
+    public function isRecipe(): bool
+    {
+        $img = $this->input->getElementsByTagName('img');
+        return ($img->count() >= 2);
+    }
+
+    /**
+     * @return string
+     */
+    public function extractSlug(): string
+    {
+        $h1 = $this->input->getElementsByTagName('h1');
+        $h1 = $h1->item(0);
+        if ($h1 === null) {
+            return 'unknown2';
+        } else {
+            return $this->slugify($h1->nodeValue);
+        }
+    }
+
     private function dumpHead(DOMNode $node)
     {
         $outputRoot = $this->output->documentElement;
