@@ -4,7 +4,7 @@
 $opts = "i:o:";
 $options = getopt($opts);
 
-// Load transformation engine
+// Load TOC engine
 require_once('lib/Toc.php');
 $toc = new lib\Toc();
 $toc->initializeOutput();
@@ -13,7 +13,7 @@ $toc->initializeOutput();
 processDirectory($toc, $options['i']);
 
 // Save output package
-file_put_contents($options['o'], $toc->finalize());
+file_put_contents($options['o'] . '/xhtml/', $toc->finalize());
 
 function processDirectory(lib\Toc $toc, string $inputDir)
 {
