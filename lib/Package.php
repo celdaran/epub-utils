@@ -11,7 +11,7 @@ class Package
      * Initialize the output Document
      * @param string $template
      */
-    public function initializeOutput(string $template = 'template/package.opf')
+    public function initializeOutput(string $template)
     {
         $this->output = new domDocument('1.0', 'UTF-8');
         $this->output->load($template);
@@ -37,14 +37,15 @@ class Package
     /**
      * Add an image file to the output Document
      * @param string $fileName
+     * @param int $counter
      */
-    public function addImg(string $fileName)
+    public function addImg(string $fileName, int $counter)
     {
         echo "Processing file $fileName\n";
 
         // Set attributes
         $href = 'img/' . $fileName;
-        $id = 'img' . md5($fileName);
+        $id = sprintf('img_%04d', $counter); // 'img' . md5($fileName);
         $mediaType = (substr($fileName, -3) === 'png') ? 'image/png' : 'image/jpeg';
 
         // Add file to document
@@ -65,8 +66,8 @@ class Package
         $chapterNumber = sprintf('%04d', (int)$part[0]);
 
         // Set attributes
-        $href = $fileName;
-        $id = $chapterNumber;
+        $href = 'xhtml/' . $fileName;
+        $id = 'c' . $chapterNumber;
         $mediaType = 'application/xhtml+xml';
 
         // Add file to document

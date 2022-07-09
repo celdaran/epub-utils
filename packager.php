@@ -4,10 +4,17 @@
 $opts = "i:o:t:";
 $options = getopt($opts);
 
+// Template?
+if (array_key_exists('t', $options)) {
+    $template = $options['t'];
+} else {
+    $template = 'template/package.opf';
+}
+
 // Load transformation engine
 require_once('lib/Package.php');
 $p = new lib\Package();
-$p->initializeOutput($options['t']);
+$p->initializeOutput($template);
 
 // Process files
 processDirectory($p, $options['i'], 'css');
@@ -24,6 +31,9 @@ function processDirectory(lib\Package $p, string $dirName, string $dirType)
     // Get css files
     $files = scandir($dir);
 
+    // Experiment
+    $counter = 0;
+
     // Process files
     foreach ($files as $file) {
 
@@ -37,7 +47,7 @@ function processDirectory(lib\Package $p, string $dirName, string $dirType)
                 $p->addCss($file);
                 break;
             case 'img':
-                $p->addImg($file);
+                $p->addImg($file, $counter++);
                 break;
             case 'xhtml':
                 if (strpos($file, 'nav.xhtml') === false) {
