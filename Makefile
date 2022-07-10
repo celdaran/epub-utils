@@ -2,20 +2,21 @@
 help:
 	@echo "EPUB Utils is a collection of scripts to help transform EPUB files from a Word export. Usage:"
 	@echo ""
-	@echo "make renamer: Rename files like 1.xhtml, 23.xhtml, 456.xhtml to 0001.xhtml, 0023.xhtml, 0456.xhtml"
-	@echo "make transformer: Transform unzipped EPUB file from Reedsy format to Lockshire format"
-	@echo "make toc: Build a new TOC out of already-transformed files"
-	@echo "make packager: Build a new package.opf file from already-transformed files"
+	@echo "rename...: Rename files like 1.xhtml, 23.xhtml, 456.xhtml to 0001.xhtml, 0023.xhtml, 0456.xhtml"
+	@echo "transform: Transform unzipped EPUB file from Reedsy format to Lockshire format"
+	@echo "toc......: Build a new TOC out of already-transformed files"
+	@echo "package..: Build a new package.opf file from already-transformed files"
 	@echo ""
 	@echo "This is the order they're intended to be run in as well: rename files, transform files, build new TOC+OPF from transformed files"
 
-.PHONY: renamer
-renamer:
-	php -f renamer.php -- -i /data/www/mbk-cfo/reedsy-input/OEBPS/
+.PHONY: rename
+rename:
+	php -f renamer.php -- -i ../mbk-cfo/input/OEBPS/
 
-.PHONY: transformer
-transformer:
-	php -f transformer.php -- -i /data/www/mbk-cfo/reedsy-input/OEBPS -o /data/www/mbk-cfo/epub-utils-output
+.PHONY: transform
+transform:
+	mkdir -p ../mbk-cfo/output/xhtml
+	php -f transformer.php -- -i ../mbk-cfo/input/OEBPS -o ../mbk-cfo/output
 
 .PHONY: toc
 toc:
