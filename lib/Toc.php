@@ -43,7 +43,7 @@ class Toc
         $title = $title->item(0);
 
         // Now add li/a tags
-        $toc = $this->output->getElementsByTagName('ul');
+        $toc = $this->output->getElementsByTagName('ol');
         $toc = $toc->item(0);
 
         $item = $this->output->createElement('li');
