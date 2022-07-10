@@ -6,6 +6,7 @@ help:
 	@echo "transform: Transform unzipped EPUB file from Reedsy format to Lockshire format"
 	@echo "toc......: Build a new TOC out of already-transformed files"
 	@echo "package..: Build a new package.opf file from already-transformed files"
+	@echo "export...: Move required files to output for the next stage of processing"
 	@echo ""
 	@echo "This is the order they're intended to be run in as well: rename files, transform files, build new TOC+OPF from transformed files"
 
@@ -20,8 +21,15 @@ transform:
 
 .PHONY: toc
 toc:
-	php -f toc.php -- -i /data/www/mbk-cfo/epub-utils-output/xhtml/ -o /data/www/mbk-cfo/epub-utils-output/xhtml/generated-toc.xhtml
+	php -f toc.php -- -i ../mbk-cfo/output/xhtml/ -o ../mbk-cfo/output/xhtml/9999.toc.xhtml
 
-.PHONY: packager
-packager:
-	php -f packager.php -- -i ../mbk-cfo/epub-utils-output -o ../mbk-cfo/build/template/EPUB/package.opf
+.PHONY: package
+package:
+	php -f packager.php -- -i ../mbk-cfo/output -o ../mbk-cfo/output/package.opf
+
+.PHONY: export
+export:
+	mkdir -p ../mbk-cfo/output/css
+	cp ../mbk-cfo/input/OEBPS/mbk-cfo.css ../mbk-cfo/output/css/manuscript.css
+	mkdir -p ../mbk-cfo/output/img
+	cp ../mbk-cfo/input/OEBPS/images/* ../mbk-cfo/output/img/
