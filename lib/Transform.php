@@ -25,7 +25,7 @@ class Transform
             echo "Could not read file\n";
         }
         $this->input->preserveWhiteSpace = false;
-        $this->documentTitle = 'unknown';
+        $this->documentTitle = $this->extractTitle();
     }
 
     public function initializeOutput()
@@ -53,7 +53,7 @@ class Transform
         $html->appendChild($attr);
     }
 
-    public function process()
+    public function process(bool $isRecipe)
     {
         $inputRoot = $this->input->documentElement;
 
@@ -64,7 +64,11 @@ class Transform
             }
 
             if ($node->nodeName === 'body') {
-                $this->dumpBody($node);
+                if ($isRecipe) {
+                    $this->dumpBody($node);
+                } else {
+                    $this->cloneBody($node);
+                }
             }
         }
     }
@@ -134,7 +138,7 @@ class Transform
                             if ($recipeNodeName !== '#text') {
                                 if (($recipeNodeName === 'h1') && (1 === 1)) {
                                     $this->currentSection = 'title';
-                                    $this->documentTitle = $recipeNodeValue;
+                                    // $this->documentTitle = $recipeNodeValue;
                                     $div = $this->writeHeading('h2', $recipeNodeValue);
                                 } elseif (($recipeNodeName === 'div') && ($grandChildNode->attributes['class'] === 'chapter-content')) {
                                     $this->currentSection = 'images';
@@ -212,6 +216,13 @@ class Transform
         }
     }
 
+    private function cloneBody(DOMNode $node)
+    {
+        $outputRoot = $this->output->documentElement;
+        $body = $this->output->importNode($node, true);
+        $outputRoot->appendChild($body);
+    }
+
     private function copyTag(DOMNode $parentNode, DOMNode $node)
     {
         $nodeName = $node->nodeName;
@@ -274,6 +285,12 @@ class Transform
         $subject = str_replace(' ', '-', $subject);
         $subject = preg_replace('/[\':]/', '', $subject);
         return $subject;
+    }
+
+    private function extractTitle(): string
+    {
+        $title = $this->input->getElementsByTagName('title');
+        return $title->item(0)->nodeValue;
     }
 
     public function finalize(): array
