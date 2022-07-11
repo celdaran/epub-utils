@@ -275,7 +275,7 @@ class Transform
         return $ul;
     }
 
-    private function slugify(string $subject): string
+    public static function slugify(string $subject): string
     {
         $subject = strtolower($subject);
         $subject = str_replace(' ', '-', $subject);
@@ -283,7 +283,7 @@ class Transform
         return $subject;
     }
 
-    private function extractTitle(): string
+    public function extractTitle(): string
     {
         $title = $this->input->getElementsByTagName('title');
         return $title->item(0)->nodeValue;
@@ -294,7 +294,7 @@ class Transform
         $this->output->formatOutput = true;
         return [
             'title' => $this->documentTitle,
-            'slug' => $this->slugify($this->documentTitle),
+            'slug' => self::slugify($this->documentTitle),
             'xhtml' => $this->output->saveXML()
         ];
     }
