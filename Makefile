@@ -3,33 +3,59 @@ help:
 	@echo "EPUB Utils is a collection of scripts to help transform EPUB files from a Word export. Usage:"
 	@echo ""
 	@echo "rename...: Rename files like 1.xhtml, 23.xhtml, 456.xhtml to 0001.xhtml, 0023.xhtml, 0456.xhtml"
+	@echo "insert...: Add a file and renumber all subsequent files"
+	@echo "install..: Copy css and images from source to target (no transformation)"
 	@echo "transform: Transform unzipped EPUB file from Reedsy format to Lockshire format"
 	@echo "toc......: Build a new TOC out of already-transformed files"
 	@echo "package..: Build a new package.opf file from already-transformed files"
-	@echo "export...: Move required files to output for the next stage of processing"
 	@echo ""
-	@echo "This is the order they're intended to be run in as well: rename files, transform files, build new TOC+OPF from transformed files"
+	@echo "The intended run order is: make rename transform toc package export"
+	@echo "The insert and remove targets are just helpers and possible not needed."
 
 .PHONY: rename
-rename:
-	php -f renamer.php -- -i ../mbk-cfo/input/OEBPS/
+rename: check-source
+	php -f renamer.php -- -i $(SOURCE)
+
+.PHONY: insert
+insert: check-file check-source
+	php -f inserter.php -- -i $(SOURCE) -f $(FILE)
+
+.PHONY: install
+install: check-source check-target
+	mkdir -p $(TARGET)/css
+	mkdir -p $(TARGET)/img
+	mkdir -p $(TARGET)/xhtml
+	cp $(SOURCE)/manuscript.css $(TARGET)/css/manuscript.css
+	cp $(SOURCE)/images/* $(TARGET)/img/
 
 .PHONY: transform
-transform:
-	mkdir -p ../mbk-cfo/output/xhtml
-	php -f transformer.php -- -i ../mbk-cfo/input/OEBPS -o ../mbk-cfo/output
+transform: check-source check-target
+	rm $(TARGET)/xhtml/*
+	php -f transformer.php -- -i $(SOURCE) -o $(TARGET)
 
 .PHONY: toc
-toc:
-	php -f toc.php -- -i ../mbk-cfo/output/xhtml/ -o ../mbk-cfo/output/xhtml/9999.toc.xhtml
+toc: check-target
+	php -f toc.php -- -i $(TARGET)/xhtml -o $(TARGET)/xhtml/0005.toc.xhtml
 
 .PHONY: package
-package:
-	php -f packager.php -- -i ../mbk-cfo/output -o ../mbk-cfo/output/package.opf
+package: check-target
+	php -f packager.php -- -i $(TARGET) -o $(TARGET)/xhtml/package.opf
 
-.PHONY: export
-export:
-	mkdir -p ../mbk-cfo/output/css
-	cp ../mbk-cfo/input/OEBPS/mbk-cfo.css ../mbk-cfo/output/css/manuscript.css
-	mkdir -p ../mbk-cfo/output/img
-	cp ../mbk-cfo/input/OEBPS/images/* ../mbk-cfo/output/img/
+.PHONY: check-source
+check-source:
+ifndef SOURCE
+	$(error SOURCE is undefined)
+endif
+
+.PHONY: check-target
+check-target:
+ifndef TARGET
+	$(error TARGET is undefined)
+endif
+
+.PHONY: check-file
+check-file:
+ifndef FILE
+	$(error FILE is undefined)
+endif
+
