@@ -4,7 +4,7 @@
 $opts = "i:";
 $options = getopt($opts);
 
-// Load transformation engine
+// Load renamer
 require_once('lib/Renamer.php');
 $r = new lib\Renamer();
 
