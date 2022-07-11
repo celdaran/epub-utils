@@ -50,7 +50,7 @@ function processDirectory(lib\Package $p, string $dirName, string $dirType)
                 $p->addImg($file, $counter++);
                 break;
             case 'xhtml':
-                if (strpos($file, 'toc.xhtml') === false) {
+                if (strpos($file, 'contents.xhtml') === false) {
                     $p->addXhtml($file);
                 } else {
                     $p->addXhtml($file, 'nav');
