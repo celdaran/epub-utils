@@ -195,9 +195,11 @@ class Transform
                                         $imgSrc = $nextThingImported->attributes[0]->nodeValue;
                                         $imgSrc = str_replace('images/', '../img/', $imgSrc);
                                         $imgClass = (substr($imgSrc, -3) === 'jpg' ? 'photo' : 'qr');
+                                        $imgAlt = (substr($imgSrc, -3) === 'jpg' ? 'Photo of completed recipe' : 'QR code for WW recipe');
                                         $yyz->removeAttribute('class');
                                         $yyz->setAttribute('src', $imgSrc);
                                         $yyz->setAttribute('class', $imgClass);
+                                        $yyz->setAttribute('alt', $imgAlt);
                                     } else {
                                         if ($recipeNodeValue) {
                                             $yyz->nodeValue = htmlspecialchars($recipeNodeValue);
