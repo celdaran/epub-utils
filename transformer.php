@@ -19,14 +19,15 @@ foreach ($files as $file) {
 
     $inputFileName = $options['i'] . '/' . $file;
 
-    if (is_file($inputFileName) && (substr($inputFileName, -6) === '.xhtml')) {
+    // Instantiate transformer
+    $x = new lib\Transform();
+
+    if ($x->fileAllowed($inputFileName)) {
         $chapterNumber = $r->getChapterNumber($file);
 
         // Read file
         $input = file_get_contents($inputFileName);
 
-        // Instantiate transformer
-        $x = new lib\Transform();
         $x->initializeInput($input);
         $x->initializeOutput();
 

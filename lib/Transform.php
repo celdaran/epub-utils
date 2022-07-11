@@ -82,18 +82,14 @@ class Transform
         return ($img->count() >= 2);
     }
 
-    /**
-     * @return string
-     */
-    public function extractSlug(): string
+    public function fileAllowed(string $fileName): bool
     {
-        $h1 = $this->input->getElementsByTagName('h1');
-        $h1 = $h1->item(0);
-        if ($h1 === null) {
-            return 'unknown2';
-        } else {
-            return $this->slugify($h1->nodeValue);
+        $allowed = false;
+        if (is_file($fileName) && (substr($fileName, -6) === '.xhtml')) {
+            // TODO: Add support for .xignore if there are files to be ignored
+            $allowed = true;
         }
+        return $allowed;
     }
 
     private function dumpHead(DOMNode $node)
