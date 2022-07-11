@@ -8,7 +8,7 @@ $options = getopt($opts);
 if (array_key_exists('t', $options)) {
     $template = $options['t'];
 } else {
-    $template = 'template/package.opf';
+    $template = 'src/template/package.opf';
 }
 
 // Load transformation engine

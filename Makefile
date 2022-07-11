@@ -15,11 +15,11 @@ help:
 
 .PHONY: rename
 rename: check-source
-	php -f renamer.php -- -i $(SOURCE)
+	php -f src/renamer.php -- -i $(SOURCE)
 
 .PHONY: insert
 insert: check-file check-source
-	php -f inserter.php -- -i $(SOURCE) -f $(FILE)
+	php -f src/inserter.php -- -i $(SOURCE) -f $(FILE)
 
 .PHONY: install
 install: check-source check-target
@@ -34,15 +34,15 @@ install: check-source check-target
 transform: check-source check-target
 	mkdir -p $(TARGET)/xhtml
 	rm $(TARGET)/xhtml/*
-	php -f transformer.php -- -i $(SOURCE) -o $(TARGET)
+	php -f src/transformer.php -- -i $(SOURCE) -o $(TARGET)
 
 .PHONY: toc
 toc: check-target
-	php -f toc.php -- -i $(TARGET)/xhtml -o $(TARGET)/xhtml/0005.contents.xhtml
+	php -f src/toc.php -- -i $(TARGET)/xhtml -o $(TARGET)/xhtml/0005.contents.xhtml
 
 .PHONY: package
 package: check-target
-	php -f packager.php -- -i $(TARGET) -o $(TARGET)/package.opf
+	php -f src/packager.php -- -i $(TARGET) -o $(TARGET)/package.opf
 
 .PHONY: check-source
 check-source:

@@ -11,7 +11,7 @@ class Toc
      * Initialize the output Document
      * @param string $template
      */
-    public function initializeOutput(string $template = 'template/toc.xhtml')
+    public function initializeOutput(string $template = 'src/template/toc.xhtml')
     {
         $this->output = new domDocument('1.0', 'UTF-8');
         $this->output->load($template);
