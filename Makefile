@@ -27,13 +27,13 @@ insert: check-file check-source
 .PHONY: install
 install: check-source check-target
 	mkdir -p $(TARGET)/css
-	mkdir -p $(TARGET)/img
+	mkdir -p $(TARGET)/images
 	mkdir -p $(TARGET)/fonts
 	rm -f $(TARGET)/css/*
-	rm -f $(TARGET)/img/*
+	rm -f $(TARGET)/images/*
 	rm -f $(TARGET)/fonts/*
 	cp $(SOURCE)/manuscript.css $(TARGET)/css/manuscript.css
-	cp $(SOURCE)/images/* $(TARGET)/img/
+	cp $(SOURCE)/images/* $(TARGET)/images/
 	cp $(SOURCE)/fonts/* $(TARGET)/fonts/
 	cp $(SOURCE)/ebook-cover.jpg $(TARGET)/
 

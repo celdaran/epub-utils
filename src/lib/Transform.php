@@ -193,7 +193,7 @@ class Transform
                                         $yyz->appendChild($nextThingImported);
                                         */
                                         $imgSrc = $nextThingImported->attributes[0]->nodeValue;
-                                        $imgSrc = str_replace('images/', '../img/', $imgSrc);
+                                        $imgSrc = str_replace('images/', '../images/', $imgSrc);
                                         $imgClass = (substr($imgSrc, -3) === 'jpg' ? 'photo' : 'qr');
                                         $imgAlt = (substr($imgSrc, -3) === 'jpg' ? 'Photo of completed recipe' : 'QR code for WW recipe');
                                         $yyz->removeAttribute('class');

@@ -62,7 +62,7 @@ class Package
         echo "Processing file $fileName\n";
 
         // Set attributes
-        $href = 'img/' . $fileName;
+        $href = 'images/' . $fileName;
         $id = sprintf('img_%04d', $counter);
         $mediaType = (substr($fileName, -3) === 'png') ? 'image/png' : 'image/jpeg';
 
