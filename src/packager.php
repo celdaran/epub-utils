@@ -16,6 +16,9 @@ require_once('lib/Package.php');
 $p = new lib\Package();
 $p->initializeOutput($template);
 
+// Add cover image first
+$p->addCoverImg('ebook-cover.jpg');
+
 // Process files
 processDirectory($p, $options['i'], 'css');
 processDirectory($p, $options['i'], 'img');
@@ -31,7 +34,7 @@ function processDirectory(lib\Package $p, string $dirName, string $dirType)
     // Get css files
     $files = scandir($dir);
 
-    // Experiment
+    // Image counter
     $counter = 0;
 
     // Process files

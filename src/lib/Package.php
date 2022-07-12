@@ -35,6 +35,24 @@ class Package
     }
 
     /**
+     * Add a cover image file to the output Document
+     * @param string $fileName
+     */
+    public function addCoverImg(string $fileName)
+    {
+        echo "Processing cover image\n";
+
+        // Set attributes
+        $href = $fileName;
+        $id = 'img_cover';
+        $mediaType = 'image/jpeg';
+        $properties = 'cover-image';
+
+        // Add file to document
+        $this->addToManifest($href, $id, $mediaType, $properties);
+    }
+
+    /**
      * Add an image file to the output Document
      * @param string $fileName
      * @param int $counter
@@ -45,8 +63,26 @@ class Package
 
         // Set attributes
         $href = 'img/' . $fileName;
-        $id = sprintf('img_%04d', $counter); // 'img' . md5($fileName);
+        $id = sprintf('img_%04d', $counter);
         $mediaType = (substr($fileName, -3) === 'png') ? 'image/png' : 'image/jpeg';
+
+        // Add file to document
+        $this->addToManifest($href, $id, $mediaType);
+    }
+
+    /**
+     * Add a font file to the output Document
+     * @param string $fileName
+     * @param int $counter
+     */
+    public function addFont(string $fileName, int $counter)
+    {
+        echo "Processing file $fileName\n";
+
+        // Set attributes
+        $href = 'fonts/' . $fileName;
+        $id = sprintf('font_%04d', $counter);
+        $mediaType = 'application/font-sfnt';
 
         // Add file to document
         $this->addToManifest($href, $id, $mediaType);
@@ -120,8 +156,22 @@ class Package
      */
     public function finalize(): string
     {
+        // Convert dom to xml
         $this->output->formatOutput = true;
-        return $this->output->saveXML();
+        $xml = $this->output->saveXML();
+
+        // Variables
+        $uuid = '0a46e3bc-c949-490f-a4e7-d128ce687f4f';
+        $modifedDate = date('Y-m-d\TH:i:s\Z');
+        $publishedDate = substr($modifedDate, 0, 10);
+
+        // Make substitutions
+        $xml = str_replace('__UUID__', $uuid, $xml);
+        $xml = str_replace('__MODIFIED_DATE___', $modifedDate, $xml);
+        $xml = str_replace('__PUBLISH_DATE__', $publishedDate, $xml);
+
+        // That should do it
+        return $xml;
     }
 
 }
