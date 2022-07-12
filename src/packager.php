@@ -22,6 +22,7 @@ $p->addCoverImg('ebook-cover.jpg');
 // Process files
 processDirectory($p, $options['i'], 'css');
 processDirectory($p, $options['i'], 'img');
+processDirectory($p, $options['i'], 'fonts');
 processDirectory($p, $options['i'], 'xhtml');
 
 // Save output package
@@ -51,6 +52,9 @@ function processDirectory(lib\Package $p, string $dirName, string $dirType)
                 break;
             case 'img':
                 $p->addImg($file, $counter++);
+                break;
+            case 'fonts':
+                $p->addFont($file, $counter++);
                 break;
             case 'xhtml':
                 if (strpos($file, 'contents.xhtml') === false) {
