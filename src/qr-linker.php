@@ -1,7 +1,6 @@
 <?php namespace App;
 
 use App\lib\Transform;
-use domDocument;
 
 // Get command line options
 $opts = "i:";
