@@ -37,6 +37,9 @@ foreach ($files as $file) {
         // Process file
         $x->process($isRecipe);
 
+        // Any final-pass actions
+        $x->postProcess($isRecipe);
+
         // Write file output
         $output = $x->finalize();
         $outputFileName = sprintf($options['o'] . '/xhtml/' . '%s.%s.xhtml', $chapterNumber, $output['slug']);

@@ -4,6 +4,7 @@ use domDocument;
 use domElement;
 use DOMImplementation;
 use DOMNode;
+use DOMXPath;
 
 class Transform
 {
@@ -73,6 +74,21 @@ class Transform
         }
     }
 
+    public function postProcess(bool $isRecipe)
+    {
+        // This only applies to recipe pages
+        if (!$isRecipe)
+            return;
+
+        /** @var DOMNode $qr */
+        $qr = $this->getElementByClass('qr');
+
+        /** @var DOMNode $top */
+        $top = $this->getElementByClass('title');
+
+        $top->insertBefore($qr, $top->firstChild);
+    }
+
     /**
      * @return bool
      */
@@ -84,6 +100,8 @@ class Transform
 
     public function fileAllowed(string $fileName): bool
     {
+        // return $fileName === '../mbk-cfo/source/OEBPS/0010_egg-fried-rice.xhtml');
+
         $allowed = false;
         if (is_file($fileName) && (substr($fileName, -6) === '.xhtml')) {
             // TODO: Add support for .xignore if there are files to be ignored
@@ -141,7 +159,7 @@ class Transform
                                     $div = $this->writeHeading('h3', $recipeNodeValue);
                                 } elseif (($recipeNodeName === 'p') && ($recipeNodeValue === 'Stats')) {
                                     $this->currentSection = 'stats';
-                                    $div = $this->writeHeading('h3', $recipeNodeValue);
+                                    $div = $this->appendToHeading();
                                 } elseif (($recipeNodeName === 'p') && ($recipeNodeValue === 'Ingredients')) {
                                     $this->currentSection = 'ingredients';
                                     $div = $this->writeHeading('h3', $recipeNodeValue);
@@ -170,14 +188,23 @@ class Transform
                                             $yyz = $this->output->createElement('blockquote');
                                             $yyz->setAttribute('class', $this->currentSection);
                                         }
+                                    } elseif ($this->currentSection === 'stats') {
+                                        // Special handling to move stats up to a different part of the document
+                                        $recipeStats = $this->getElementByClass('recipe-stats');
+                                        if ($recipeStats->nodeValue) {
+                                            $recipeStats->nodeValue = $recipeStats->nodeValue . ', ' . $recipeNodeValue;
+                                        } else {
+                                            $recipeStats->nodeValue = $recipeNodeValue;
+                                        }
                                     } else {
                                         // These are coming in as <p> but I want to send them out
                                         $yyz = $this->output->createElement('li');
                                         $yyz->setAttribute('class', $this->currentSection);
                                     }
+
                                     if ($this->currentSection === null) {
                                         $this->tag->appendChild($yyz);
-                                    } else {
+                                    } elseif ($this->currentSection !== 'stats') {
                                         $div->appendChild($yyz);
                                     }
 
@@ -201,8 +228,10 @@ class Transform
                                         $yyz->setAttribute('class', $imgClass);
                                         $yyz->setAttribute('alt', $imgAlt);
                                     } else {
-                                        if ($recipeNodeValue) {
-                                            $yyz->nodeValue = htmlspecialchars($recipeNodeValue);
+                                        if ($this->currentSection !== 'stats') {
+                                            if ($recipeNodeValue) {
+                                                $yyz->nodeValue = htmlspecialchars($recipeNodeValue);
+                                            }
                                         }
                                     }
                                 }
@@ -272,9 +301,36 @@ class Transform
         $heading->appendChild($attr);
 
         $ul = $this->output->createElement('ul');
-        $div->appendChild($ul);
+        if ($class !== 'title-heading') {
+            $div->appendChild($ul);
+        }
 
         return $ul;
+    }
+
+    private function appendToHeading(): DomElement
+    {
+        // Create new element
+        $p = $this->output->createElement('p');
+        $p->setAttribute('class', 'recipe-stats');
+
+        $title = $this->getElementByClass('title');
+
+        // Attach it
+        $title->appendChild($p);
+
+        // Now grab the QR code and send that out as the next "div"
+        $qr = $this->getElementByClass('qr');
+
+        // Carry on
+        return $qr;
+    }
+
+    private function getElementByClass(string $classname)
+    {
+        $finder = new DOMXPath($this->output);
+        $nodes = $finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' $classname ')]");
+        return $nodes[0];
     }
 
     public static function slugify(string $subject): string
