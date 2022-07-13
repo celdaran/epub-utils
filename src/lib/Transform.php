@@ -169,6 +169,15 @@ class Transform
                                 } elseif (($recipeNodeName === 'p') && ($recipeNodeValue === 'Nutrition')) {
                                     $this->currentSection = 'nutrition';
                                     $div = $this->writeHeading('h3', $recipeNodeValue);
+                                } elseif (($recipeNodeName === 'p') && ($recipeNodeValue === 'Notes')) {
+                                    $this->currentSection = 'notes';
+                                    $div = $this->writeHeading('h3', $recipeNodeValue);
+                                } elseif (($recipeNodeName === 'p') && ($recipeNodeValue === 'Tip')) {
+                                    $this->currentSection = 'tips';
+                                    $div = $this->writeHeading('h3', $recipeNodeValue);
+                                } elseif (($recipeNodeName === 'p') && ($recipeNodeValue === 'Tips')) {
+                                    $this->currentSection = 'tips';
+                                    $div = $this->writeHeading('h3', $recipeNodeValue);
                                 } else {
                                     // echo "$recipeNodeName = $recipeNodeValue (section {$this->currentSection})\n";
                                     if ($this->currentSection === null) {
