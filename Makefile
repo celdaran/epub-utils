@@ -45,7 +45,7 @@ transform: check-source check-target
 
 .PHONY: toc
 toc: check-target
-	php -f src/toc.php -- -i $(TARGET)/xhtml -o $(TARGET)/xhtml/0005.contents.xhtml
+	php -f src/toc.php -- -i $(TARGET)/xhtml -o $(TARGET)/xhtml/0004.contents.xhtml
 
 .PHONY: package
 package: check-target
