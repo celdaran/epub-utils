@@ -12,6 +12,7 @@ help:
 	@echo "Utility targets:"
 	@echo "  class-finder..: Finds all CSS classes referenced in a directory"
 	@echo "  qr-linker.....: Finds all QR codes in the documents and enhances them with anchor tags"
+	@echo "  ncx...........: Convert an existing TOC to NCX (EPUB2) format"
 	@echo ""
 	@echo "The intended run order is: make rename transform toc package export"
 	@echo "The insert and remove targets are just helpers and possible not needed."
@@ -58,6 +59,10 @@ class-finder: check-source
 .PHONY: qr-linker
 qr-linker: check-source
 	php -f src/qr-linker.php -- -i $(SOURCE)
+
+.PHONY: ncx
+ncx: check-source check-target
+	php -f src/ncx.php -- -i $(SOURCE) -o $(TARGET)
 
 .PHONY: check-source
 check-source:
