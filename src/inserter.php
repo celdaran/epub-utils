@@ -9,4 +9,4 @@ require_once('lib/Renamer.php');
 require_once('lib/Inserter.php');
 
 $i = new lib\Inserter($options['i'], $options['f']);
-$i->exec('_');
+$i->exec('.');

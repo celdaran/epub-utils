@@ -36,15 +36,15 @@ class Inserter
             // Log name and number of each hit found
             if (preg_match('/[0-9]{4}/', $file)) {
                 $filteredFiles[] = [
-                    'number' => (int)$this->renamer->getChapterNumber($file),
+                    'number' => (int)$this->renamer->getChapterNumber($file, $delimiter),
                     'name' => $file,
                 ];
             }
         }
 
         // Get chapter number of file to be inserted
-        $newChapterNumber = (int)$this->renamer->getChapterNumber($this->fileName);
-        $newChapterName = $this->renamer->getChapterName($this->fileName);
+        $newChapterNumber = (int)$this->renamer->getChapterNumber($this->fileName, $delimiter);
+        $newChapterName = $this->renamer->getChapterName($this->fileName, $delimiter);
 
         // Now go for it...
         $fileCreated = false;
@@ -63,7 +63,7 @@ class Inserter
                 $fileCreated = true;
             }
 
-            $oldChapterName = $this->renamer->getChapterName($file['name']);
+            $oldChapterName = $this->renamer->getChapterName($file['name'], $delimiter);
 
             $oldFileName = sprintf('%s/%s', $this->dirName, $file['name']);
             $newFileName = sprintf('%s/%04d%s%s.xhtml',
