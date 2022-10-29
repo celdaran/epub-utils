@@ -10,11 +10,12 @@ help:
 	@echo "  package.......: Build a new package.opf file from already-transformed files"
 	@echo ""
 	@echo "Utility targets:"
+	@echo "  insert........: Inserts a new, empty file in the XHTML directory and renames all above files accordingly"
 	@echo "  class-finder..: Finds all CSS classes referenced in a directory"
 	@echo "  qr-linker.....: Finds all QR codes in the documents and enhances them with anchor tags"
 	@echo "  ncx...........: Convert an existing TOC to NCX (EPUB2) format"
 	@echo ""
-	@echo "The intended run order is: make rename transform toc package export"
+	@echo "The intended run order is: make rename install transform toc package qr-linker"
 	@echo "The insert and remove targets are just helpers and possible not needed."
 
 .PHONY: rename
