@@ -1,0 +1,2 @@
+# exported environment variables
+export PROJECT_NAME ?= mbk-cfo
