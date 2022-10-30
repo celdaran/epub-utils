@@ -284,7 +284,7 @@ class Transform
             }
 
             if ($nodeValue) {
-                $tag->nodeValue = $nodeValue;
+                $tag->nodeValue = htmlentities($nodeValue);
             }
         }
     }
@@ -302,7 +302,7 @@ class Transform
         // Create tag
         $heading = $this->output->createElement($tag);
         $div->appendChild($heading);
-        $heading->nodeValue = $value;
+        $heading->nodeValue = htmlentities($value);
 
         // Add class attribute
         $attr = $this->output->createAttribute('class');
