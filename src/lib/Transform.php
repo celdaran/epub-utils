@@ -98,8 +98,9 @@ class Transform
     {
         $metaTags = $this->input->getElementsByTagName('meta');
         foreach ($metaTags as $meta) {
-            $pageType = $meta->getAttribute('data-page-type');
-            if ($pageType === 'nonrecipe') {
+            $tagName = $meta->getAttribute('name');
+            $tagContent = $meta->getAttribute('content');
+            if ($tagName === 'doctype' && $tagContent === 'nonrecipe') {
                 return false;
             }
         }
