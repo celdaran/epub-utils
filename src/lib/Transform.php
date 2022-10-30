@@ -83,10 +83,12 @@ class Transform
         /** @var DOMNode $qr */
         $qr = $this->getElementByClass('qr');
 
-        /** @var DOMNode $top */
-        $top = $this->getElementByClass('title');
+        if ($qr !== null) {
+            /** @var DOMNode $top */
+            $top = $this->getElementByClass('title');
 
-        $top->insertBefore($qr, $top->firstChild);
+            $top->insertBefore($qr, $top->firstChild);
+        }
     }
 
     /**
@@ -334,18 +336,27 @@ class Transform
         // Attach it
         $title->appendChild($p);
 
-        // Now grab the QR code and send that out as the next "div"
+        // Now grab the QR code, if it exists, and send that out as the next "div"
         $qr = $this->getElementByClass('qr');
 
-        // Carry on
-        return $qr;
+        if ($qr === null) {
+            return $title;
+        } else {
+            echo "Found a qr element where none exists\n";
+            return $qr;
+        }
     }
 
     private function getElementByClass(string $classname)
     {
         $finder = new DOMXPath($this->output);
-        $nodes = $finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' $classname ')]");
-        return $nodes[0];
+        $query = "//*[contains(@class, '$classname')]";
+        $nodes = $finder->query($query);
+        if ($nodes->length > 0) {
+            return $nodes[0];
+        } else {
+            return null;
+        }
     }
 
     public static function slugify(string $subject): string
