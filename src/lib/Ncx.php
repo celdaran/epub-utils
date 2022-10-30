@@ -112,7 +112,7 @@ class Ncx
 
         $navLabel = $this->output->createElement('navLabel');
         $navLabelText = $this->output->createElement('text');
-        $navLabelText->nodeValue = $displayText;
+        $navLabelText->nodeValue = htmlentities($displayText);
         $navLabel->appendChild($navLabelText);
         $navPoint->appendChild($navLabel);
 
