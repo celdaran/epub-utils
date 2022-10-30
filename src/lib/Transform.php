@@ -94,8 +94,14 @@ class Transform
      */
     public function isRecipe(): bool
     {
-        $img = $this->input->getElementsByTagName('img');
-        return ($img->count() >= 2);
+        $metaTags = $this->input->getElementsByTagName('meta');
+        foreach ($metaTags as $meta) {
+            $pageType = $meta->getAttribute('data-page-type');
+            if ($pageType === 'nonrecipe') {
+                return false;
+            }
+        }
+        return true;
     }
 
     public function fileAllowed(string $fileName): bool
