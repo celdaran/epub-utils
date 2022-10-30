@@ -7,6 +7,7 @@ help:
 	@echo "  install.......: Copy css and images from source to target (no transformation)"
 	@echo "  transform.....: Transform unzipped EPUB file from Reedsy format to Lockshire format"
 	@echo "  toc...........: Build a new TOC out of already-transformed files"
+	@echo "  toc2..........: Copy a custom TOC from source to target"
 	@echo "  package.......: Build a new package.opf file from already-transformed files"
 	@echo ""
 	@echo "Utility targets:"
@@ -48,6 +49,10 @@ transform: check-source check-target
 .PHONY: toc
 toc: check-target
 	php -f src/toc.php -- -i $(TARGET)/xhtml -o $(TARGET)/xhtml/0004.contents.xhtml
+
+.PHONY: toc2
+toc2: check-source check-target
+	cp $(SOURCE)/0004_toc.xhtml $(TARGET)/xhtml/0004.contents.xhtml
 
 .PHONY: package
 package: check-target
