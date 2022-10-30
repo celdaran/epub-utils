@@ -364,6 +364,7 @@ class Transform
         $subject = strtolower($subject);
         $subject = str_replace(' ', '-', $subject);
         $subject = str_replace('&', 'and', $subject);
+        $subject = str_replace('ñ', 'n', $subject);
         $subject = str_replace('[new!]', 'new', $subject);
         $subject = preg_replace('/[\':]/', '', $subject);
         $subject = preg_replace('/\[.*]/', '', $subject);
