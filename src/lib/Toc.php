@@ -51,7 +51,7 @@ class Toc
 
         $anchor = $this->output->createElement('a');
         $anchor->setAttribute('href', $fileName);
-        $anchor->nodeValue = $title->nodeValue;
+        $anchor->nodeValue = htmlentities($title->nodeValue);
         $item->appendChild($anchor);
     }
 
